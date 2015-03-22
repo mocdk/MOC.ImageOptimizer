@@ -1,0 +1,14 @@
+{
+  "name": "Libraries",
+  "description": "Fetch image processing binaries",
+  "dependencies": {
+    "gifsicle": "2.0.*",
+    "jpegtran-bin": "2.0.*",
+    "optipng-bin": "2.0.*",
+    "svgo": "0.5.*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mocdk/MOC.ImageOptimizer.git"
+  }
+}

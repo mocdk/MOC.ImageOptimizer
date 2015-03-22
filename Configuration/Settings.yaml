@@ -1,0 +1,20 @@
+MOC:
+  ImageOptimizer:
+    useGlobalBinary: FALSE # use globally installed binaries for all formats instead
+    formats:
+      jpg:
+        enabled: TRUE
+        progressive: TRUE # whether or not to server progressive jpgs
+        useGlobalBinary: FALSE # use globally installed binary for jpegtran instead
+      png:
+        enabled: TRUE
+        optimizationLevel: 2 # optimization level (0-7)
+        useGlobalBinary: FALSE # use globally installed binary for optipng instead
+      gif:
+        enabled: TRUE
+        optimizationLevel: 2 # optimization level (1-3)
+        useGlobalBinary: FALSE # use globally installed binary for gifsicle instead
+      svg:
+        enabled: TRUE
+        pretty: FALSE # keep the output readable
+        useGlobalBinary: FALSE # use globally installed binary for svgo instead
