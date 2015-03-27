@@ -14,7 +14,7 @@ Installation
 
 Requires npm (node.js) to work out of the box, although binaries can also be installed manually without it.
 
-composer require "moc/imageoptimizer" "1.0.*"
+```composer require "moc/imageoptimizer" "1.0.*"```
 
 Run `npm install --prefix Resources/Private/Library` in the package (should happen automatically during install).
 
