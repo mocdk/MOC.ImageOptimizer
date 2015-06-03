@@ -3,6 +3,7 @@ namespace MOC\ImageOptimizer\Aspects;
 
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Aop\JoinPointInterface;
+use TYPO3\Flow\Reflection\ObjectAccess;
 
 /**
  * @Flow\Scope("singleton")
@@ -55,7 +56,9 @@ class ResourcePublisherAspect {
 	 * @return void
 	 */
 	public function optimizePublishedFile(JoinPointInterface $joinPoint) {
-		$this->optimizeFile($joinPoint->getMethodArgument('relativeTargetPathAndFilename'));
+		$proxy = $joinPoint->getProxy();
+		$path = ObjectAccess::getProperty($proxy, 'path', TRUE);
+		$this->optimizeFile($path . $joinPoint->getMethodArgument('relativeTargetPathAndFilename'));
 	}
 
 	/**
