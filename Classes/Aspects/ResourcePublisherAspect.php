@@ -83,6 +83,7 @@ class ResourcePublisherAspect {
 						return;
 					}
 					$library = 'jpegtran';
+					$binaryPath = sprintf('jpegtran-bin/vendor/%s', $library);
 					$arguments = sprintf('-copy none -optimize %s -outfile %s %s', $this->settings['formats']['jpg']['progressive'] === TRUE ? '-progressive' : '', $file, $file);
 					if ($this->settings['formats']['jpg']['useGlobalBinary'] === TRUE) {
 						$useGlobalBinary = TRUE;
@@ -93,6 +94,7 @@ class ResourcePublisherAspect {
 						return;
 					}
 					$library = 'optipng';
+					$binaryPath = sprintf('optipng-bin/vendor/%s', $library);
 					$arguments = sprintf('-o%u -strip all -out %s %s', $this->settings['formats']['png']['optimizationLevel'], $file, $file);
 					if ($this->settings['formats']['png']['useGlobalBinary'] === TRUE) {
 						$useGlobalBinary = TRUE;
@@ -103,13 +105,14 @@ class ResourcePublisherAspect {
 						return;
 					}
 					$library = 'gifsicle';
+					$binaryPath = sprintf('%1$s/vendor/%1$s', $library);
 					$arguments = sprintf('--batch -O%u %s ', $this->settings['formats']['gif']['optimizationLevel'], $file);
 					if ($this->settings['formats']['gif']['useGlobalBinary'] === TRUE) {
 						$useGlobalBinary = TRUE;
 					}
 					break;
 			}
-			$binaryPath = sprintf('%1$s/vendor/%1$s', $library);
+
 		} else {
 			if ($this->settings['formats']['svg']['enabled'] === FALSE) {
 				return;
