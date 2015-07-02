@@ -1,0 +1,9 @@
+MOC\ImageOptimizer\Aspects\ResourcePublisherAspect:
+  properties:
+    processingCache:
+      object:
+        factoryObjectName: TYPO3\Flow\Cache\CacheManager
+        factoryMethodName: getCache
+        arguments:
+          1:
+            value: MOC_ImageOptimizer_Processing_Cache

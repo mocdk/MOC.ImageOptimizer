@@ -3,7 +3,9 @@ namespace MOC\ImageOptimizer\Aspects;
 
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Aop\JoinPointInterface;
+use TYPO3\Flow\Log\SystemLoggerInterface;
 use TYPO3\Flow\Reflection\ObjectAccess;
+use TYPO3\Flow\Cache\Frontend\StringFrontend;
 
 /**
  * @Flow\Scope("singleton")
@@ -27,6 +29,12 @@ class ResourcePublisherAspect {
 	 * @var array
 	 */
 	protected $settings;
+
+	/**
+	 * @Flow\Inject
+	 * @var StringFrontend
+	 */
+	protected $processingCache;
 
 	/**
 	 * @param array $settings
@@ -67,65 +75,82 @@ class ResourcePublisherAspect {
 	 * @throws \Exception
 	 */
 	public function optimizeFile($pathAndFilename) {
-		$imageType = exif_imagetype($pathAndFilename);
-		$fileExtension = strtolower(pathinfo($pathAndFilename, PATHINFO_EXTENSION));
-		if (($imageType !== FALSE && !in_array($imageType, [\IMAGETYPE_JPEG, \IMAGETYPE_PNG, \IMAGETYPE_GIF], TRUE)) || ($imageType === FALSE && $fileExtension !== 'svg')) {
-			return;
-		}
-
-		$useGlobalBinary = $this->settings['useGlobalBinary'];
-		$binaryRootPath = 'Private/Library/node_modules/';
-		$file = escapeshellarg(realpath($pathAndFilename));
-		if ($imageType !== FALSE) {
-			switch ($imageType) {
-				case \IMAGETYPE_JPEG:
-					if ($this->settings['formats']['jpg']['enabled'] === FALSE) {
-						return;
-					}
-					$library = 'jpegtran';
-					$arguments = sprintf('-copy none -optimize %s -outfile %s %s', $this->settings['formats']['jpg']['progressive'] === TRUE ? '-progressive' : '', $file, $file);
-					if ($this->settings['formats']['jpg']['useGlobalBinary'] === TRUE) {
-						$useGlobalBinary = TRUE;
-					}
-					break;
-				case \IMAGETYPE_PNG:
-					if ($this->settings['formats']['png']['enabled'] === FALSE) {
-						return;
-					}
-					$library = 'optipng';
-					$arguments = sprintf('-o%u -strip all -out %s %s', $this->settings['formats']['png']['optimizationLevel'], $file, $file);
-					if ($this->settings['formats']['png']['useGlobalBinary'] === TRUE) {
-						$useGlobalBinary = TRUE;
-					}
-					break;
-				case \IMAGETYPE_GIF:
-					if ($this->settings['formats']['gif']['enabled'] === FALSE) {
-						return;
-					}
-					$library = 'gifsicle';
-					$arguments = sprintf('--batch -O%u %s ', $this->settings['formats']['gif']['optimizationLevel'], $file);
-					if ($this->settings['formats']['gif']['useGlobalBinary'] === TRUE) {
-						$useGlobalBinary = TRUE;
-					}
-					break;
-			}
-			$binaryPath = sprintf('%1$s/vendor/%1$s', $library);
-		} else {
-			if ($this->settings['formats']['svg']['enabled'] === FALSE) {
+		try {
+			$imageType = exif_imagetype($pathAndFilename);
+			$fileExtension = strtolower(pathinfo($pathAndFilename, PATHINFO_EXTENSION));
+			if (($imageType !== FALSE && !in_array($imageType, [\IMAGETYPE_JPEG, \IMAGETYPE_PNG, \IMAGETYPE_GIF], TRUE)) || ($imageType === FALSE && $fileExtension !== 'svg')) {
 				return;
 			}
-			$library = 'svgo';
-			$binaryPath = sprintf('%1$s/bin/%1$s', $library);
-			$arguments = sprintf('%s %s', $this->settings['formats']['svg']['pretty'] === TRUE ? '--pretty' : '', $file);
-			if ($this->settings['formats']['svg']['useGlobalBinary'] === TRUE) {
-				$useGlobalBinary = TRUE;
+
+			$cacheIdentifier = md5($pathAndFilename);
+			$lastModificationTime = \DateTime::createFromFormat('U', filemtime(is_link($pathAndFilename) ? readlink($pathAndFilename) : $pathAndFilename));
+			$cachedLastModificationTime = $this->processingCache->get($cacheIdentifier);
+			if ($cachedLastModificationTime instanceof \DateTime && $cachedLastModificationTime === $lastModificationTime) {
+				return;
 			}
+
+			$useGlobalBinary = $this->settings['useGlobalBinary'];
+			$binaryRootPath = 'Private/Library/node_modules/';
+			$file = escapeshellarg(realpath($pathAndFilename));
+			if ($imageType !== FALSE) {
+				switch ($imageType) {
+					case \IMAGETYPE_JPEG:
+						if ($this->settings['formats']['jpg']['enabled'] === FALSE) {
+							return;
+						}
+						$library = 'jpegtran';
+						$binaryPath = sprintf('jpegtran-bin/vendor/%s', $library);
+						$arguments = sprintf('-copy none -optimize %s -outfile %s %s', $this->settings['formats']['jpg']['progressive'] === TRUE ? '-progressive' : '', $file, $file);
+						if ($this->settings['formats']['jpg']['useGlobalBinary'] === TRUE) {
+							$useGlobalBinary = TRUE;
+						}
+						break;
+					case \IMAGETYPE_PNG:
+						if ($this->settings['formats']['png']['enabled'] === FALSE) {
+							return;
+						}
+						$library = 'optipng';
+						$binaryPath = sprintf('optipng-bin/vendor/%s', $library);
+						$arguments = sprintf('-o%u -strip all -out %s %s', $this->settings['formats']['png']['optimizationLevel'], $file, $file);
+						if ($this->settings['formats']['png']['useGlobalBinary'] === TRUE) {
+							$useGlobalBinary = TRUE;
+						}
+						break;
+					case \IMAGETYPE_GIF:
+						if ($this->settings['formats']['gif']['enabled'] === FALSE) {
+							return;
+						}
+						$library = 'gifsicle';
+						$binaryPath = sprintf('%1$s/vendor/%1$s', $library);
+						$arguments = sprintf('--batch -O%u %s ', $this->settings['formats']['gif']['optimizationLevel'], $file);
+						if ($this->settings['formats']['gif']['useGlobalBinary'] === TRUE) {
+							$useGlobalBinary = TRUE;
+						}
+						break;
+				}
+
+			} else {
+				if ($this->settings['formats']['svg']['enabled'] === FALSE) {
+					return;
+				}
+				$library = 'svgo';
+				$binaryPath = sprintf('%1$s/bin/%1$s', $library);
+				$arguments = sprintf('%s %s', $this->settings['formats']['svg']['pretty'] === TRUE ? '--pretty' : '', $file);
+				if ($this->settings['formats']['svg']['useGlobalBinary'] === TRUE) {
+					$useGlobalBinary = TRUE;
+				}
+			}
+
+			$binaryPath = $useGlobalBinary === TRUE ? $library : $this->packageManager->getPackageOfObject($this)->getResourcesPath() . $binaryRootPath . $binaryPath;
+			$cmd = escapeshellcmd($binaryPath) . ' ' . $arguments;
+			$output = [];
+			exec($cmd, $output, $result);
+
+			$this->systemLogger->log($cmd . ' (' . $result . ')', LOG_INFO, $output);
+			$this->processingCache->set($cacheIdentifier, $lastModificationTime);
+		} catch (\Exception $exception) {
+			$this->systemLogger->logException($exception);
 		}
-		$binaryPath = $useGlobalBinary === TRUE ? $library : $this->packageManager->getPackageOfObject($this)->getResourcesPath() . $binaryRootPath . $binaryPath;
-		$cmd = escapeshellcmd($binaryPath) . ' ' . $arguments;
-		$output = [];
-		exec($cmd, $output, $result);
-		$this->systemLogger->log($cmd . ' (' . $result . ')', LOG_INFO, $output);
 	}
 
 }
