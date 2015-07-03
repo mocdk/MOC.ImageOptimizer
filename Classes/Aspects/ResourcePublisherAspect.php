@@ -127,7 +127,7 @@ class ResourcePublisherAspect {
 		$cmd = escapeshellcmd($binaryPath) . ' ' . $arguments;
 		$output = [];
 		exec($cmd, $output, $result);
-		$this->systemLogger->log($cmd . ' (' . $result . ')', LOG_INFO, $output);
+		$this->systemLogger->log($cmd . ' (' . ((int)$result === 0 ? 'OK' : 'Error: ' . $result) . ')', LOG_INFO, $output);
 	}
 
 }
