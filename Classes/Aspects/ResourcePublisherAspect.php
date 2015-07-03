@@ -112,7 +112,6 @@ class ResourcePublisherAspect {
 					}
 					break;
 			}
-
 		} else {
 			if ($this->settings['formats']['svg']['enabled'] === FALSE) {
 				return;
@@ -124,7 +123,7 @@ class ResourcePublisherAspect {
 				$useGlobalBinary = TRUE;
 			}
 		}
-		$binaryPath = $useGlobalBinary === TRUE ? $library : $this->packageManager->getPackageOfObject($this)->getResourcesPath() . $binaryRootPath . $binaryPath;
+		$binaryPath = $useGlobalBinary === TRUE ? $this->settings['globalBinaryPath'] . $library : $this->packageManager->getPackageOfObject($this)->getResourcesPath() . $binaryRootPath . $binaryPath;
 		$cmd = escapeshellcmd($binaryPath) . ' ' . $arguments;
 		$output = [];
 		exec($cmd, $output, $result);
