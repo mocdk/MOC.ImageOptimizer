@@ -1,6 +1,14 @@
 MOC.ImageOptimizer
 ==================
 
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/mocdk/MOC.ImageOptimizer/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/mocdk/MOC.ImageOptimizer/?branch=master)
+[![Latest Stable Version](https://poser.pugx.org/moc/imageoptimizer/v/stable)](https://packagist.org/packages/moc/imageoptimizer)
+[![Total Downloads](https://poser.pugx.org/moc/imageoptimizer/downloads)](https://packagist.org/packages/moc/imageoptimizer)
+[![License](https://poser.pugx.org/moc/imageoptimizer/license)](https://packagist.org/packages/moc/imageoptimizer)
+
+Introduction
+------------
+
 Flow package that optimizes generated thumbnail images (jpg, png, gif, svg) for web presentation.
 
 Original files are never affected since copies are always created for thumbnails.
