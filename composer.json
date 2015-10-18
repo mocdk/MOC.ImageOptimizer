@@ -2,7 +2,7 @@
 	"name": "moc/imageoptimizer",
 	"type": "typo3-flow-package",
 	"description": "Flow package that optimizes generated thumbnail images (jpg, png, gif, svg) for web presentation.",
-	"license": "LGPL-3.0+",
+	"license": "MIT",
 	"require": {
 		"typo3/media": "~2.0"
 	},
