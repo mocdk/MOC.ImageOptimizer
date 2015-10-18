@@ -32,7 +32,7 @@ Additionally options for optimization level (png & gif), progressive (jpg), pret
 Usage of global available binaries can be configured instead or for specific formats.
 
 Usage
-_____
+-----
 
 Clear thumbnails to generate new ones that will automatically be optimized.
 
