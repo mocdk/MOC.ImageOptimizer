@@ -5,6 +5,8 @@ Flow package that optimizes generated thumbnail images (jpg, png, gif, svg) for 
 
 Original files are never affected since copies are always created for thumbnails.
 
+Non-blocking during rendering (asynchronous) optimization.
+
 Using jpegtran, optipng, gifsicle and svgo for the optimizations.
 
 Should work with Linux, FreeBSD, OSX, SunOS & Windows (only tested Linux & FreeBSD so far).
@@ -34,6 +36,8 @@ Usage of global available binaries can be configured instead or for specific for
 Usage
 -----
 
-Clear thumbnails to generate new ones that will automatically be optimized.
+* Clear thumbnails to generate new ones that will automatically be optimized.
 
 ```./flow media:clearthumbnails```
+
+* See system log for debugging and error output.
