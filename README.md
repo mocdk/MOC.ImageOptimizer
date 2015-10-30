@@ -9,7 +9,7 @@ MOC.ImageOptimizer
 Introduction
 ------------
 
-Flow package that optimizes generated thumbnail images (jpg, png, gif, svg) for web presentation.
+Neos CMS / Flow framework package that optimizes generated thumbnail images (jpg, png, gif, svg) for web presentation.
 
 Original files are never affected since copies are always created for thumbnails.
 
@@ -19,7 +19,7 @@ Using jpegtran, optipng, gifsicle and svgo for the optimizations.
 
 Should work with Linux, FreeBSD, OSX, SunOS & Windows (only tested Linux & FreeBSD so far).
 
-Compatible with Flow 3.x
+Compatible with Neos 1.x-2.x+ / Flow 2.x-3.x+
 
 Installation
 ------------
