@@ -64,8 +64,8 @@ class ThumbnailAspect {
 		$thumbnail = $joinPoint->getProxy();
 		$thumbnailResource = $thumbnail->getResource();
 
-		// Easy workaround for getting local path since the resource API doesn't allow it due to support for non local file system targets
-		$pathAndFilename = realpath(FLOW_PATH_WEB . parse_url($this->resourceManager->getPublicPersistentResourceUri($thumbnailResource), PHP_URL_PATH));
+		$streamMetaData = stream_get_meta_data($thumbnailResource->getStream());
+		$pathAndFilename = $streamMetaData['uri'];
 
 		$useGlobalBinary = $this->settings['useGlobalBinary'];
 		$binaryRootPath = 'Private/Library/node_modules/';
