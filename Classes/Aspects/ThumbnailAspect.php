@@ -63,6 +63,9 @@ class ThumbnailAspect {
 		/** @var \TYPO3\Media\Domain\Model\Thumbnail $thumbnail */
 		$thumbnail = $joinPoint->getProxy();
 		$thumbnailResource = $thumbnail->getResource();
+		if (!$thumbnailResource) {
+                        return;
+		}
 
 		$streamMetaData = stream_get_meta_data($thumbnailResource->getStream());
 		$pathAndFilename = $streamMetaData['uri'];
