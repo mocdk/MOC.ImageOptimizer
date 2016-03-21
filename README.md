@@ -28,7 +28,7 @@ Requires npm (node.js) to work out of the box, although binaries can also be ins
 
 ```composer require "moc/imageoptimizer" "~2.0"```
 
-Run `npm install --prefix Resources/Private/Library` in the package (should happen automatically during install).
+Run `npm install --prefix Resources/Private/Library` in the package.
 
 Configuration
 -------------
