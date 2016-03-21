@@ -21,19 +21,30 @@ Should work with Linux, FreeBSD, OSX, SunOS & Windows (only tested Linux & FreeB
 
 Compatible with Neos 1.x-2.x+ / Flow 2.x-3.x+
 
+##### Only supports local file system (no CDN support yet)
+
 Installation
 ------------
 
 Requires npm (node.js) to work out of the box, although binaries can also be installed manually without it.
 
-```composer require "moc/imageoptimizer" "~2.0"```
+`composer require "moc/imageoptimizer" "~2.0"`
 
-Run `npm install --prefix Resources/Private/Library` in the package (should happen automatically during install).
+Ensure the image manipulation libraries `jpegtran` (JPG), `optipng` (PNG), `gifsicle` (GIF) and `svgo` (SVG) are installed globally. Libraries can be skipped if desired.
+
+Alternatively install them using `npm`:
+```
+# Globally
+npm install -g jpegtran-bin optipng-bin gifsicle svgo
+
+# Locally
+npm install --prefix Packages/Libraries/MOC.ImageOptimizer/Resources/Private/Library
+```
 
 Configuration
 -------------
 
-Using the ``Settings`` configuration, multiple options can be adjusted.
+Using the `Settings` configuration, multiple options can be adjusted.
 
 Optimization can be disabled for specific file formats.
 
@@ -41,11 +52,13 @@ Additionally options for optimization level (png & gif), progressive (jpg), pret
 
 Usage of global available binaries can be configured instead or for specific formats.
 
+Enable using the setting `MOC.ImageOptimizer.useGlobalBinary` and configure the path in `MOC.ImageOptimizer.globalBinaryPath`.
+
 Usage
 -----
 
 * Clear thumbnails to generate new ones that will automatically be optimized.
 
-```./flow media:clearthumbnails```
+`./flow media:clearthumbnails`
 
 * See system log for debugging and error output.
