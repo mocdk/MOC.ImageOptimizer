@@ -17,9 +17,5 @@
 		"psr-4": {
 			"MOC\\ImageOptimizer\\": "Classes"
 		}
-	},
-	"scripts": {
-		"post-package-update": "npm install --prefix Resources/Private/Library",
-		"post-package-install": "npm install --prefix Resources/Private/Library"
 	}
 }
