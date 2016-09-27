@@ -40,7 +40,10 @@ npm install -g jpegtran-bin optipng-bin gifsicle svgo
 # Locally
 npm install --prefix Packages/Libraries/MOC.ImageOptimizer/Resources/Private/Library
 ```
-
+```
+# For Locally,the package moc/imageoptimizer appear in Application folder, so should change it to:
+npm install --prefix Packages/Application/MOC.ImageOptimizer/Resources/Private/Library
+```
 Configuration
 -------------
 
