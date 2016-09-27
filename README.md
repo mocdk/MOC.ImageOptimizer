@@ -38,7 +38,7 @@ Alternatively install them using `npm`:
 npm install -g jpegtran-bin optipng-bin gifsicle svgo
 
 # Locally
-npm install --prefix Packages/Libraries/MOC.ImageOptimizer/Resources/Private/Library
+npm install --prefix Packages/Application/MOC.ImageOptimizer/Resources/Private/Library
 ```
 
 Configuration
