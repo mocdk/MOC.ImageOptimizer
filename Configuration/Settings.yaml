@@ -1,6 +1,7 @@
 MOC:
   ImageOptimizer:
     useGlobalBinary: FALSE # use globally installed binaries for all formats instead
+    useGlobalBinaryPath: FALSE # if set, the binary path will also globally used
     globalBinaryPath: ''
     formats:
       jpg:
