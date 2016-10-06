@@ -120,7 +120,7 @@ class ThumbnailAspect {
 				}
 				break;
 		}
-		$binaryPath = $useGlobalBinary === TRUE ? $this->settings['globalBinaryPath'] . $library : $this->packageManager->getPackageOfObject($this)->getResourcesPath() . $binaryRootPath . $binaryPath;
+		$binaryPath = $useGlobalBinary === TRUE ? $this->settings['globalBinaryPath'] . ($this->settings['useGlobalBinaryPath'] ? $binaryPath : $library) : $this->packageManager->getPackageOfObject($this)->getResourcesPath() . $binaryRootPath . $binaryPath;
 		$cmd = escapeshellcmd($binaryPath) . ' ' . $arguments;
 		$output = [];
 		exec($cmd, $output, $result);
