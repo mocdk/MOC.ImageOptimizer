@@ -1,21 +1,26 @@
 {
 	"name": "moc/imageoptimizer",
-	"type": "typo3-flow-package",
+	"type": "neos-package",
 	"description": "Flow package that optimizes generated thumbnail images (jpg, png, gif, svg) for web presentation.",
 	"keywords": [ "imageoptimization", "performance", "images", "media", "neos", "flow" ],
 	"license": "MIT",
 	"authors": [
 		{
 			"name": "Aske Ertmann",
-			"email": "aske@moc.net"
+			"email": "aertmann@gmail.com"
 		}
 	],
 	"require": {
-		"typo3/media": "~2.0"
+		"neos/media": "~3.0"
 	},
 	"autoload": {
 		"psr-4": {
 			"MOC\\ImageOptimizer\\": "Classes"
+		}
+	},
+	"extra": {
+		"branch-alias": {
+			"dev-master": "3.0.x-dev"
 		}
 	}
 }
