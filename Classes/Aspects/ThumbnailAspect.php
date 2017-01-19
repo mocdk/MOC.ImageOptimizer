@@ -62,7 +62,7 @@ class ThumbnailAspect
      */
     public function optimizeThumbnail(JoinPointInterface $joinPoint)
     {
-        /** @var \TYPO3\Media\Domain\Model\Thumbnail $thumbnail */
+        /** @var \Neos\Media\Domain\Model\Thumbnail $thumbnail */
         $thumbnail = $joinPoint->getProxy();
         $thumbnailResource = $thumbnail->getResource();
         if (!$thumbnailResource) {
