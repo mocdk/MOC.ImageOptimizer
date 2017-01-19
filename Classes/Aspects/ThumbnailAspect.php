@@ -130,6 +130,7 @@ class ThumbnailAspect
         $cmd = escapeshellcmd($binaryPath) . ' ' . $arguments;
         $output = [];
         exec($cmd, $output, $result);
-        $this->systemLogger->log($cmd . ' (' . ((int)$result === 0 ? 'OK' : 'Error: ' . $result) . ')', LOG_INFO, $output);
+        $failed = (int)$result !== 0;
+        $this->systemLogger->log($cmd . ' (' . ($failed ? 'Error: ' . $result : 'OK') . ')', $failed ? LOG_ERR : LOG_INFO, $output);
     }
 }
