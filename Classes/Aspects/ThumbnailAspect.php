@@ -1,6 +1,8 @@
 <?php
 namespace MOC\ImageOptimizer\Aspects;
 
+use Neos\Eel\CompilingEvaluator;
+use Neos\Eel\Utility;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Aop\JoinPointInterface;
 use Neos\Flow\Log\SystemLoggerInterface;
@@ -30,6 +32,12 @@ class ThumbnailAspect
      * @var ResourceManager
      */
     protected $resourceManager;
+
+    /**
+     * @Flow\Inject
+     * @var CompilingEvaluator
+     */
+    protected $eelEvaluator;
 
     /**
      * @var array
@@ -76,56 +84,28 @@ class ThumbnailAspect
         $binaryRootPath = 'Private/Library/node_modules/';
         $file = escapeshellarg($pathAndFilename);
         $imageType = $thumbnailResource->getMediaType();
-        switch ($imageType) {
-            case 'image/jpeg':
-                if ($this->settings['formats']['jpg']['enabled'] === false) {
-                    return;
-                }
-                $library = 'jpegtran';
-                $binaryPath = sprintf('%1$s-bin/vendor/%s', $library);
-                $arguments = sprintf('-copy none -optimize %s -outfile %s %s', $this->settings['formats']['jpg']['progressive'] === true ? '-progressive' : '', $file, $file);
-                if ($this->settings['formats']['jpg']['useGlobalBinary'] === true) {
-                    $useGlobalBinary = true;
-                }
-            break;
-            case 'image/png':
-                if ($this->settings['formats']['png']['enabled'] === false) {
-                    return;
-                }
-                $library = 'optipng';
-                $binaryPath = sprintf('%1$s-bin/vendor/%s', $library);
-                $arguments = sprintf('-o%u -strip all -out %s %s', $this->settings['formats']['png']['optimizationLevel'], $file, $file);
-                if ($this->settings['formats']['png']['useGlobalBinary'] === true) {
-                    $useGlobalBinary = true;
-                }
-            break;
-            case 'image/gif':
-                if ($this->settings['formats']['gif']['enabled'] === false) {
-                    return;
-                }
-                $library = 'gifsicle';
-                $binaryPath = sprintf('%1$s/vendor/%1$s', $library);
-                $arguments = sprintf('--batch -O%u %s ', $this->settings['formats']['gif']['optimizationLevel'], $file);
-                if ($this->settings['formats']['gif']['useGlobalBinary'] === true) {
-                    $useGlobalBinary = true;
-                }
-            break;
-            case 'image/svg+xml':
-                if ($this->settings['formats']['svg']['enabled'] === false) {
-                    return;
-                }
-                $library = 'svgo';
-                $binaryPath = sprintf('%1$s/bin/%1$s', $library);
-                $arguments = sprintf('%s %s', $this->settings['formats']['svg']['pretty'] === true ? '--pretty' : '', $file);
-                if ($this->settings['formats']['svg']['useGlobalBinary'] === true) {
-                    $useGlobalBinary = true;
-                }
-            break;
-            default:
-                $this->systemLogger->log(sprintf('Unsupported type "%s" skipped in optimizeThumbnail', $imageType), LOG_INFO);
-                return;
-                break;
+
+        if (!array_key_exists($imageType, $this->settings['formats'])) {
+            $this->systemLogger->log(sprintf('Unsupported type "%s" skipped in optimizeThumbnail', $imageType), LOG_INFO);
+            return;
         }
+
+        $librarySettings = $this->settings['formats'][$imageType];
+
+        if ($librarySettings['enabled'] === false) {
+            return;
+        }
+
+        if ($librarySettings['useGlobalBinary'] === true) {
+            $useGlobalBinary = true;
+        }
+
+        $library = $librarySettings['library'];
+        $binaryPath = $librarySettings['binaryPath'];
+        $eelExpression = $librarySettings['arguments'];
+        $parameters = array_merge($librarySettings['parameters'], ['file' => $file]);
+        $arguments = Utility::evaluateEelExpression($eelExpression, $this->eelEvaluator, $parameters);
+
         $binaryPath = $useGlobalBinary === true ? $this->settings['globalBinaryPath'] . $library : $this->packageManager->getPackage('MOC.ImageOptimizer')->getResourcesPath() . $binaryRootPath . $binaryPath;
         $cmd = escapeshellcmd($binaryPath) . ' ' . $arguments;
         $output = [];
