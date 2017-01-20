@@ -68,15 +68,16 @@ Add the following to your `Settings` to use `jpegoptim` instead of `jpegtran`:
         formats:
           'image/jpeg':
             enabled: true
-            progressive: true 
-            quality: 80
             library: 'jpegoptim'
             binaryPath: 'jpegoptim-bin/vendor/jpegoptim'
             arguments: "'--strip-all --max=' + quality + ' ' + (progressive ? '--all-progressive ' : '') + '-o ' + file"
-            
+            parameters:
+              progressive: true # whether or not to serve progressive jpgs
+              quality: 80 # quality level (1-100)
+
 When doing this you have to take care that you provide the necessary library yourself as it's not included 
 when doing the installation like described above.
-            
+
 Usage
 -----
 
