@@ -9,28 +9,28 @@ MOC.ImageOptimizer
 Introduction
 ------------
 
-Neos CMS / Flow framework package that optimizes generated thumbnail images (jpg, png, gif, svg) for web presentation.
+Neos CMS / Flow framework package that optimizes generated thumbnail images (jpg, png, gif, svg and more) for web presentation.
 
 Original files are never affected since copies are always created for thumbnails.
 
 Non-blocking during rendering (asynchronous) optimization.
 
-Using jpegtran, optipng, gifsicle and svgo for the optimizations.
+Using jpegtran, optipng, gifsicle and svgo or alternative customizible ones for the optimizations.
 
 Should work with Linux, FreeBSD, OSX, SunOS & Windows (only tested Linux & FreeBSD so far).
 
-Compatible with Neos 1.x-2.x+ / Flow 2.x-3.x+
+Compatible with Neos 1.x, 2.x, 3.x+ / Flow 2.x, 3.x, 4.x+
 
-##### Only supports local file system (no CDN support yet)
+##### Only supports local file system (no CDN support yet) (see #10)
 
 Installation
 ------------
 
 Requires npm (node.js) to work out of the box, although binaries can also be installed manually without it.
 
-`composer require "moc/imageoptimizer" "~2.0"`
+`composer require "moc/imageoptimizer" "~3.0"`
 
-Ensure the image manipulation libraries `jpegtran` (JPG), `optipng` (PNG), `gifsicle` (GIF) and `svgo` (SVG) are installed globally. Libraries can be skipped if desired.
+Ensure the image manipulation libraries `jpegtran` (JPG), `optipng` (PNG), `gifsicle` (GIF) and `svgo` (SVG) are installed globally. Libraries can be skipped if desired, just make sure to disable those mimetypes. 
 
 Alternatively install them using `npm`:
 ```
@@ -48,7 +48,7 @@ Using the `Settings` configuration, multiple options can be adjusted.
 
 Optimization can be disabled for specific file formats.
 
-Additionally options for optimization level (png & gif), progressive (jpg), pretty (svg) can be adjusted.
+Additionally options such as optimization level (png & gif), progressive (jpg), pretty (svg) can be adjusted depending on optimization library.
 
 Usage of global available binaries can be configured instead or for specific formats.
 
