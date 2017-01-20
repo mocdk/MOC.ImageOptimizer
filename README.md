@@ -70,7 +70,7 @@ Add the following to your `Settings` to use `jpegoptim` instead of `jpegtran`:
             enabled: true
             library: 'jpegoptim'
             binaryPath: 'jpegoptim-bin/vendor/jpegoptim'
-            arguments: "'--strip-all --max=' + quality + ' ' + (progressive ? '--all-progressive ' : '') + '-o ' + file"
+            arguments: "${'--strip-all --max=' + quality + ' ' + (progressive ? '--all-progressive ' : '') + '-o ' + file}"
             parameters:
               progressive: true # whether or not to serve progressive jpgs
               quality: 80 # quality level (1-100)
