@@ -3,19 +3,38 @@ MOC:
     useGlobalBinary: false # use globally installed binaries for all formats instead
     globalBinaryPath: ''
     formats:
-      jpg:
+      'image/jpeg':
         enabled: true
-        progressive: true # whether or not to server progressive jpgs
-        useGlobalBinary: false # use globally installed binary for jpegtran instead
-      png:
+        useGlobalBinary: false # use globally installed binary for the jpeg library instead
+        library: 'jpegtran'
+        binaryPath: 'jpegtran-bin/vendor/jpegtran'
+        arguments: "${'-copy none -optimize ' + (progressive ? '-progressive ' : '') + '-outfile ' + file + ' ' + file}"
+        parameters:
+          progressive: true # whether or not to serve progressive jpgs
+
+      'image/png':
         enabled: true
-        optimizationLevel: 2 # optimization level (0-7)
-        useGlobalBinary: false # use globally installed binary for optipng instead
-      gif:
+        useGlobalBinary: false # use globally installed binary for the png library instead
+        library: 'optipng'
+        binaryPath: 'optipng-bin/vendor/optipng'
+        arguments: "${'-o' + optimizationLevel + ' -strip all -out ' + file + ' ' + file}"
+        parameters:
+          optimizationLevel: 2 # optimization level (0-7)
+
+      'image/gif':
         enabled: true
-        optimizationLevel: 2 # optimization level (1-3)
-        useGlobalBinary: false # use globally installed binary for gifsicle instead
-      svg:
+        useGlobalBinary: false # use globally installed binary for the gif library instead
+        library: 'gifsicle'
+        binaryPath: 'gifsicle/vendor/gifsicle'
+        arguments: "${'--batch -O' + optimizationLevel + ' ' + file}"
+        parameters:
+          optimizationLevel: 2 # optimization level (1-3)
+
+      'image/svg+xml':
         enabled: true
-        pretty: false # keep the output readable
-        useGlobalBinary: false # use globally installed binary for svgo instead
+        useGlobalBinary: false # use globally installed binary for the svg library instead
+        library: 'svgo'
+        binaryPath: 'svgo/bin/svgo'
+        arguments: "${(pretty ? '--pretty ' : '') + file}"
+        parameters:
+          pretty: false # keep the output readable
