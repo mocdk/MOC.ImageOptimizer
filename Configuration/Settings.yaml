@@ -20,7 +20,7 @@ MOC:
         arguments: "${'-o' + optimizationLevel + ' -strip all -out ' + file + ' ' + file}"
         parameters:
           optimizationLevel: 2 # optimization level (0-7)
-        
+
       'image/gif':
         enabled: true
         useGlobalBinary: false # use globally installed binary for the gif library instead
@@ -29,11 +29,11 @@ MOC:
         arguments: "${'--batch -O' + optimizationLevel + ' ' + file}"
         parameters:
           optimizationLevel: 2 # optimization level (1-3)
-        
+
       'image/svg+xml':
         enabled: true
         useGlobalBinary: false # use globally installed binary for the svg library instead
-        library: 'svgo'                           
+        library: 'svgo'
         binaryPath: 'svgo/bin/svgo'
         arguments: "${(pretty ? '--pretty ' : '') + file}"
         parameters:
