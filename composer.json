@@ -11,7 +11,7 @@
 		}
 	],
 	"require": {
-		"neos/media": "~3.0"
+		"neos/media": ">3"
 	},
 	"autoload": {
 		"psr-4": {
