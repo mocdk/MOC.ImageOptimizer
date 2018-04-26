@@ -19,7 +19,7 @@ Using jpegtran, optipng, gifsicle and svgo or alternative customizible ones for 
 
 Should work with Linux, FreeBSD, OSX, SunOS & Windows (only tested Linux & FreeBSD so far).
 
-Compatible with Neos 1.x, 2.x, 3.x+ / Flow 2.x, 3.x, 4.x+
+Compatible with Neos 1.x - 4.x / Flow 1.x - 5.x
 
 ##### Only supports local file system (no CDN support yet) (see #10)
 
