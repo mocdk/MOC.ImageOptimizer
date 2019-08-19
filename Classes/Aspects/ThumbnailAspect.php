@@ -2,12 +2,17 @@
 namespace MOC\ImageOptimizer\Aspects;
 
 use Neos\Eel\CompilingEvaluator;
+use Neos\Eel\Exception;
 use Neos\Eel\Utility;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Aop\JoinPointInterface;
-use Neos\Flow\Log\SystemLoggerInterface;
-use Neos\Flow\Package\PackageManagerInterface;
+use Neos\Flow\Log\Utility\LogEnvironment;
+use Neos\Flow\Package\Exception\UnknownPackageException;
+use Neos\Flow\Package\PackageManager;
 use Neos\Flow\ResourceManagement\ResourceManager;
+use Neos\Media\Domain\Model\Thumbnail;
+use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 
 /**
  * @Flow\Scope("singleton")
@@ -16,14 +21,14 @@ use Neos\Flow\ResourceManagement\ResourceManager;
 class ThumbnailAspect
 {
     /**
-     * @var SystemLoggerInterface
+     * @var LoggerInterface
      * @Flow\Inject
      */
     protected $systemLogger;
 
     /**
      * @Flow\Inject
-     * @var PackageManagerInterface
+     * @var PackageManager
      */
     protected $packageManager;
 
@@ -65,12 +70,14 @@ class ThumbnailAspect
      * process it, import it and set that as the thumbnail resource.
      *
      * @Flow\AfterReturning("method(Neos\Media\Domain\Model\Thumbnail->refresh())")
-     * @param \Neos\Flow\Aop\JoinPointInterface $joinPoint The current join point
+     * @param JoinPointInterface $joinPoint The current join point
      * @return void
+     * @throws Exception
+     * @throws UnknownPackageException
      */
     public function optimizeThumbnail(JoinPointInterface $joinPoint)
     {
-        /** @var \Neos\Media\Domain\Model\Thumbnail $thumbnail */
+        /** @var Thumbnail $thumbnail */
         $thumbnail = $joinPoint->getProxy();
         $thumbnailResource = $thumbnail->getResource();
         if (!$thumbnailResource) {
@@ -86,7 +93,7 @@ class ThumbnailAspect
         $imageType = $thumbnailResource->getMediaType();
 
         if (!array_key_exists($imageType, $this->settings['formats'])) {
-            $this->systemLogger->log(sprintf('Unsupported type "%s" skipped in optimizeThumbnail', $imageType), LOG_INFO);
+            $this->systemLogger->info(sprintf('Unsupported type "%s" skipped in optimizeThumbnail', $imageType), LogEnvironment::fromMethodName(__METHOD__));
             return;
         }
 
@@ -111,6 +118,7 @@ class ThumbnailAspect
         $output = [];
         exec($cmd, $output, $result);
         $failed = (int)$result !== 0;
-        $this->systemLogger->log($cmd . ' (' . ($failed ? 'Error: ' . $result : 'OK') . ')', $failed ? LOG_ERR : LOG_INFO, $output);
+
+        $this->systemLogger->log($failed ? LogLevel::ERROR : LogLevel::INFO, $cmd . ' (' . ($failed ? 'Error: ' . $result : 'OK') . ')', array_merge(LogEnvironment::fromMethodName(__METHOD__), $output));
     }
 }
