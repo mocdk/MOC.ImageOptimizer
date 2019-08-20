@@ -11,8 +11,7 @@
 		}
 	],
 	"require": {
-		"neos/media": ">3",
-		"neos/flow": ">=6"
+		"neos/media": ">=5"
 	},
 	"autoload": {
 		"psr-4": {
