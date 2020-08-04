@@ -28,7 +28,7 @@ Installation
 
 Requires npm (node.js) to work out of the box, although binaries can also be installed manually without it.
 
-`composer require "moc/imageoptimizer" "~3.0"`
+`composer require "moc/imageoptimizer" "~4.0"`
 
 Ensure the image manipulation libraries `jpegtran` (JPG), `optipng` (PNG), `gifsicle` (GIF) and `svgo` (SVG) are installed globally. Libraries can be skipped if desired, just make sure to disable those mimetypes. 
 
